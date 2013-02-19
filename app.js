@@ -24,7 +24,7 @@ app.configure('development', function(){
 
 
 var client = mysql.createConnection({
-    host     : 'localhost',
+    host     : '127.0.0.1',
     database : 'geonames',
     user     : 'root',
     password : 't32xor'
@@ -34,11 +34,12 @@ app.get('/', function(req, res) {
     res.send({success:true});
 });
 
-app.get('/cities15000/:city', function(req, res) {
-    var query = 'SELECT name, country_code, latitude, longitude from cities15000 WHERE name LIKE ' + client.escape('%' + req.params.city + '%');
+
+app.get('/cities15000', function(req, res) {
+    var query = 'SELECT name, country_code, latitude, longitude from cities15000  WHERE name LIKE ' + client.escape('%' + req.query.city + '%') + ' LIMIT 10';
     client.query(query, function(err, rows, fields) {
 	if (err) return res.send(500, err);
-	return res.send(rows);
+	return res.jsonp(rows);
     });
 });
 
